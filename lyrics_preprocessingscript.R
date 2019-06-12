@@ -46,5 +46,5 @@ lyricstrain <- rbind(rock2, pop, hiphop, metal, country)
 lyricstrain <- lyricstrain[sample(nrow(lyricstrain)),]
 
 #writing preprocessed excel file
-write.csv(lyricstrain, file = '/Users/jacobellen/desktop/lyricstrain.csv')
+write.csv(lyricstrain, file = '/Users/jacobellen/desktop/lyrics_preprocessed.csv') #local pathway
   
