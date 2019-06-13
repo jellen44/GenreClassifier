@@ -1,11 +1,12 @@
 #loading required packages
-devtools::install_github(repo="farrellja/URD@debug")
 library(tidyverse)
 library(stringr)
 library(caret)
 library(tidytext)
 library(quanteda)
 library(e1071)
+if (!require("SparseM")) install.packages("SparseM")
+library(SparseM)
 
 #loading in preprocessed data and concatenating to one data frame
 lyrics1 <- read.csv("lyrics_preprocessed1.csv")
