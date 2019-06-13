@@ -7,8 +7,8 @@ library(quanteda)
 library(e1071)
 
 #loading in preprocessed data and concatenating to one data frame
-lyrics1 <- read.csv("/Users/jacobellen/desktop/lyrics_preprocessed1.csv")
-lyrics2 <- read.csv("/Users/jacobellen/desktop/lyrics_preprocessed2.csv")
+lyrics1 <- read.csv("lyrics_preprocessed1.csv")
+lyrics2 <- read.csv("lyrics_preprocessed2.csv")
 lyricstrain <- rbind(lyrics1,lyrics2)
 
 #forming a corpus
