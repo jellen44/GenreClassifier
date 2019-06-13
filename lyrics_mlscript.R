@@ -1,4 +1,5 @@
 #loading required packages
+devtools::install_github(repo="farrellja/URD@debug")
 library(tidyverse)
 library(stringr)
 library(caret)
@@ -27,7 +28,7 @@ dfm.matrixtrain <- convert(traindfm, to = "matrix")
 set.seed(nrow(dfm.matrixtrain))
 rand <- sample(nrow(dfm.matrixtrain))
 dfm.matrixtrain <- dfm.matrixtrain[rand,]
-lyrics$genre <- lyrics$genre[rand]
+lyricstrain$genre <- lyricstrain$genre[rand]
 
 #creating indices for splitting between training and testing
 end <- dim(dfm.matrixtrain)[1]
