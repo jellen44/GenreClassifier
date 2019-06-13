@@ -10,6 +10,7 @@ library(SparseM)
 
 #loading in preprocessed data and concatenating to one data frame
 lyricstrain <- read.csv("lyrics_preprocessed1.csv")
+lyricstrain <- lyricstrain[1:4000,]
 #lyrics2 <- read.csv("lyrics_preprocessed2.csv")
 #lyricstrain <- rbind(lyrics1,lyrics2)
 
