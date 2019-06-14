@@ -16,9 +16,10 @@ library(purrr)
 
 
 #loading in preprocessed data and concatenating to one data frame
-lyrics1 <- read.csv("lyrics_preprocessed1.csv")
-lyrics2 <- read.csv("lyrics_preprocessed2.csv")
-lyricstrain <- rbind(lyrics1,lyrics2)
+#lyrics1 <- read.csv("lyrics_preprocessed1.csv")
+#lyrics2 <- read.csv("lyrics_preprocessed2.csv")
+#lyricstrain <- rbind(lyrics1,lyrics2)
+lyricstrain <- read.csv("allgenres.csv")
 
 #forming a corpus
 lyricstrain$lyrics <- as.character(lyricstrain$lyrics)
@@ -30,7 +31,7 @@ dfm.matrixtrain <- dfm(traincorpus,
                 remove = stopwords("english"),
                 stem = TRUE,
                 remove_punct = TRUE)
-dfm.matrixtrain <- dfm_trim(dfm.matrixtrain, min_docfreq = 300)
+#dfm.matrixtrain <- dfm_trim(dfm.matrixtrain, min_docfreq = 100)
 # dfm.matrixtrain <- convert(traindfm, to = "matrix")
 
 #putting examples in a random order
@@ -47,7 +48,7 @@ cutoff <- floor(dim(dfm.matrixtrain)[1]*.8)
 #Training with 80% data split
 ml1 <- svm(dfm.matrixtrain[1:cutoff,],
                     lyricstrain$genre[1:cutoff],
-           kernel = 'polynomial', cost=5, probability=TRUE)
+           kernel = 'polynomial', cost=1, probability=TRUE)
 
 #making predictions with 20% data split
 preds <- predict(ml1, dfm.matrixtrain[cutoff:end,])
