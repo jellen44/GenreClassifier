@@ -10,7 +10,6 @@ library(SparseM)
 
 #loading in preprocessed data and concatenating to one data frame
 lyricstrain <- read.csv("lyrics_preprocessed1.csv")
-lyricstrain <- lyricstrain[1:12000,]
 #lyrics2 <- read.csv("lyrics_preprocessed2.csv")
 #lyricstrain <- rbind(lyrics1,lyrics2)
 
@@ -40,7 +39,7 @@ cutoff <- floor(dim(dfm.matrixtrain)[1]*.8)
 #Training with 80% data split
 ml1 <- svm(dfm.matrixtrain[1:cutoff,],
                     lyricstrain$genre[1:cutoff],
-           kernel = 'polynomial', cost=.1, probability=TRUE)
+           kernel = 'polynomial', cost=5, probability=TRUE)
 
 #making predictions with 20% data split
 preds <- predict(ml1, dfm.matrixtrain[cutoff:end,])
