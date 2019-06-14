@@ -9,9 +9,9 @@ if (!require("SparseM")) install.packages("SparseM")
 library(SparseM)
 
 #loading in preprocessed data and concatenating to one data frame
-lyricstrain <- read.csv("lyrics_preprocessed1.csv")
-#lyrics2 <- read.csv("lyrics_preprocessed2.csv")
-#lyricstrain <- rbind(lyrics1,lyrics2)
+lyrics1 <- read.csv("lyrics_preprocessed1.csv")
+lyrics2 <- read.csv("lyrics_preprocessed2.csv")
+lyricstrain <- rbind(lyrics1,lyrics2)
 
 #forming a corpus
 lyricstrain$lyrics <- as.character(lyricstrain$lyrics)
@@ -23,6 +23,7 @@ dfm.matrixtrain <- dfm(traincorpus,
                 remove = stopwords("english"),
                 stem = TRUE,
                 remove_punct = TRUE)
+dfm.matrixtrain <- dfm_trim(dfm.matrixtrain, min_termfreq = 300, min_docfreq = 100)
 # dfm.matrixtrain <- convert(traindfm, to = "matrix")
 
 #putting examples in a random order
