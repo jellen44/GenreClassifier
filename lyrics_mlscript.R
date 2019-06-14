@@ -30,7 +30,7 @@ dfm.matrixtrain <- dfm(traincorpus,
                 remove = stopwords("english"),
                 stem = TRUE,
                 remove_punct = TRUE)
-dfm.matrixtrain <- dfm_trim(dfm.matrixtrain, min_termfreq = 300, min_docfreq = 100)
+dfm.matrixtrain <- dfm_trim(dfm.matrixtrain, min_docfreq = 300)
 # dfm.matrixtrain <- convert(traindfm, to = "matrix")
 
 #putting examples in a random order
