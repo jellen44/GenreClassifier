@@ -19,7 +19,7 @@ library(purrr)
 #lyrics1 <- read.csv("lyrics_preprocessed1.csv")
 #lyrics2 <- read.csv("lyrics_preprocessed2.csv")
 #lyricstrain <- rbind(lyrics1,lyrics2)
-lyricstrain <- read.csv("allgenresupdate.csv")
+lyricstrain <- read.csv("allgenresupdatefinal.csv")
 
 #forming a corpus
 lyricstrain$lyrics <- as.character(lyricstrain$lyrics)
