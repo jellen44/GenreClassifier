@@ -48,7 +48,7 @@ cutoff <- floor(dim(dfm.matrixtrain)[1]*.8)
 #Training with 80% data split
 ml1 <- svm(dfm.matrixtrain[1:cutoff,],
                     lyricstrain$genre[1:cutoff],
-           kernel = 'polynomial', cost=1, probability=TRUE)
+           kernel = 'polynomial', cost=10, probability=TRUE)
 
 #making predictions with 20% data split
 preds <- predict(ml1, dfm.matrixtrain[cutoff:end,])
