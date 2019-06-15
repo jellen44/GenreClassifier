@@ -41,6 +41,9 @@ rand <- sample(nrow(dfm.matrixtrain))
 dfm.matrixtrain <- dfm.matrixtrain[rand,]
 lyricstrain <- lyricstrain[rand,]
 
+lyricstrain <- lyricstrain %>%
+  select(genre, lyrics)
+  
 #creating indices for splitting between training and testing
 end <- floor(dim(dfm.matrixtrain)[1])
 cutoff <- floor(dim(dfm.matrixtrain)[1]*.8)
