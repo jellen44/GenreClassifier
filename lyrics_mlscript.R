@@ -19,7 +19,7 @@ library(purrr)
 #lyrics1 <- read.csv("lyrics_preprocessed1.csv")
 #lyrics2 <- read.csv("lyrics_preprocessed2.csv")
 #lyricstrain <- rbind(lyrics1,lyrics2)
-lyricstrain <- read.csv("allgenresupdatefinal3.csv")
+lyricstrain <- read.csv("allgenresupdatefinal4.csv")
 
 #forming a corpus
 lyricstrain$lyrics <- as.character(lyricstrain$lyrics)
@@ -71,8 +71,10 @@ recall <- function(ypred, y){
   tab <- table(ypred, y)
   return(tab[2,2]/(tab[1,2]+tab[2,2]))
 }
-table(preds, lyricstrain$genre[cutoff:end])
-
+a <- table(preds, lyricstrain$genre[cutoff:end])
+rowSums(a)
+colSums(a)
+a
 
 accuracy(preds, lyricstrain$genre[cutoff:end])
 precision(preds, lyricstrain$genre[cutoff:end])
