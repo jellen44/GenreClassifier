@@ -39,7 +39,7 @@ dfm.matrixtrain <- dfm(traincorpus,
 set.seed(nrow(dfm.matrixtrain))
 rand <- sample(nrow(dfm.matrixtrain))
 dfm.matrixtrain <- dfm.matrixtrain[rand,]
-lyricstrain$genre <- lyricstrain$genre[rand]
+lyricstrain <- lyricstrain[rand,]
 
 #creating indices for splitting between training and testing
 end <- floor(dim(dfm.matrixtrain)[1])
