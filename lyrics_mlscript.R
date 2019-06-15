@@ -19,7 +19,7 @@ library(purrr)
 #lyrics1 <- read.csv("lyrics_preprocessed1.csv")
 #lyrics2 <- read.csv("lyrics_preprocessed2.csv")
 #lyricstrain <- rbind(lyrics1,lyrics2)
-lyricstrain <- read.csv("allgenresupdatefinal.csv")
+lyricstrain <- read.csv("allgenresupdatefinal3.csv")
 
 #forming a corpus
 lyricstrain$lyrics <- as.character(lyricstrain$lyrics)
@@ -48,7 +48,7 @@ cutoff <- floor(dim(dfm.matrixtrain)[1]*.8)
 #Training with 80% data split
 ml1 <- svm(dfm.matrixtrain[1:cutoff,],
                     lyricstrain$genre[1:cutoff],
-           kernel = 'polynomial', cost=10, probability=TRUE)
+           kernel = 'polynomial', cost=3, probability=TRUE)
 
 #making predictions with 20% data split
 preds <- predict(ml1, dfm.matrixtrain[cutoff:end,])
