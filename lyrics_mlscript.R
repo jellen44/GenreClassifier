@@ -52,7 +52,7 @@ cutoff <- floor(dim(dfm.matrixtrain)[1]*.8)
 ml1 <- svm(dfm.matrixtrain[1:cutoff,],
                     lyricstrain$genre[1:cutoff],
            kernel = 'linear', probability=TRUE)
-
+summary(ml1)
 write.svm(ml1, "genreclassifier.svm")
 
 #making predictions with 20% data split
