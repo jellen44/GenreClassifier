@@ -54,6 +54,7 @@ ml1 <- svm(dfm.matrixtrain[1:cutoff,],
            kernel = 'linear', probability=TRUE)
 summary(ml1)
 write.svm(ml1, "genreclassifier.svm")
+svmtest <- save(ml1, file='ml1.rda')
 
 #making predictions with 20% data split
 preds <- predict(ml1, dfm.matrixtrain[cutoff:end,])
@@ -76,7 +77,8 @@ recall <- function(ypred, y){
 a <- table(preds, lyricstrain$genre[cutoff:end])
 rowSums(a)
 colSums(a)
-a
+write.csv(a, 'predictionswrite.csv')
+save(a, file = "predictions.csv")
 
 accuracy(preds, lyricstrain$genre[cutoff:end])
 precision(preds, lyricstrain$genre[cutoff:end])
