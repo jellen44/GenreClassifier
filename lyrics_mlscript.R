@@ -78,7 +78,6 @@ a <- table(preds, lyricstrain$genre[cutoff:end])
 rowSums(a)
 colSums(a)
 write.csv(a, 'predictionswrite.csv')
-save(a, file = "predictions.csv")
 
 accuracy(preds, lyricstrain$genre[cutoff:end])
 precision(preds, lyricstrain$genre[cutoff:end])
