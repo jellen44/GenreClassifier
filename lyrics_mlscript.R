@@ -34,6 +34,8 @@ dfm.matrixtrain <- dfm(traincorpus,
 dfm.matrixtrain <- dfm_trim(dfm.matrixtrain, min_docfreq = 10)
 # dfm.matrixtrain <- convert(traindfm, to = "matrix")
 topfeatures(dfm.matrixtrain, 20)
+dfm.matrixtrainsample <- dfm.matrixtrain[1:5,]
+save(dfm.matrixtrainsample, file='dfm.matrix.rda')
 
 #putting examples in a random order
 #putting examples in a random order
@@ -54,7 +56,7 @@ ml1 <- svm(dfm.matrixtrain[1:cutoff,],
                     lyricstrain$genre[1:cutoff],
            kernel = 'linear', probability=TRUE)
 summary(ml1)
-save(ml1, file='ml1.rda')
+save(ml1, file='ml2.rda')
 
 #making predictions with 20% data split
 preds <- predict(ml1, dfm.matrixtrain[cutoff:end,])
@@ -77,12 +79,9 @@ recall <- function(ypred, y){
 a <- table(preds, lyricstrain$genre[cutoff:end])
 rowSums(a)
 colSums(a)
-write.csv(a, 'predictionswrite.csv')
+a
 
 accuracy(preds, lyricstrain$genre[cutoff:end])
 precision(preds, lyricstrain$genre[cutoff:end])
 recall(preds, lyricstrain$genre[cutoff:end])
 
-#predictions <- as.data.frame(predictions)
-#predictions <- cbind(predictions, lyricstrain$genre[cutoff:end])
-#predictions
