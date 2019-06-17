@@ -33,6 +33,7 @@ dfm.matrixtrain <- dfm(traincorpus,
                 remove_punct = TRUE)
 dfm.matrixtrain <- dfm_trim(dfm.matrixtrain, min_docfreq = 10)
 # dfm.matrixtrain <- convert(traindfm, to = "matrix")
+topfeatures(dfm.matrixtrain, 20)
 
 #putting examples in a random order
 #putting examples in a random order
@@ -53,8 +54,7 @@ ml1 <- svm(dfm.matrixtrain[1:cutoff,],
                     lyricstrain$genre[1:cutoff],
            kernel = 'linear', probability=TRUE)
 summary(ml1)
-write.svm(ml1, "genreclassifier.svm")
-svmtest <- save(ml1, file='ml1.rda')
+save(ml1, file='ml1.rda')
 
 #making predictions with 20% data split
 preds <- predict(ml1, dfm.matrixtrain[cutoff:end,])
