@@ -5,15 +5,8 @@ library(caret)
 library(tidytext)
 library(quanteda)
 library(e1071)
-if (!require("SparseM")) install.packages("SparseM")
 library(SparseM)
-if (!require("keras")) install.packages("keras")
-library(keras)
-if (!require("dplyr")) install.packages("dplyr")
 library(dplyr)
-if (!require("purrr")) install.packages("purrr")
-library(purrr)
-
 
 #loading in preprocessed data and concatenating to one data frame
 lyrics1 <- read.csv("allgenresupdatefinal1.csv")
