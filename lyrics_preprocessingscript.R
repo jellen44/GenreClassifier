@@ -29,17 +29,25 @@ lyricstrain <- lyrics %>%
 #changing Class distributions and reforming lyricstrain
 pop <- lyricstrain %>%
   filter(genre=="Pop")
-pop <- pop[1:10000,]
+pop <- pop[1:5000,]
 hiphop <- lyricstrain %>%
   filter(genre=="Hip-Hop")
-hiphop <- hiphop[1:10000,]
+hiphop <- hiphop[1:5000,]
 rock2 <- lyricstrain %>%
   filter(genre=="Rock") 
-rock2 <- rock2[1:10000,]
-lyricstrain <- rbind(rock2, pop, hiphop)
+rock2 <- rock2[1:5000,]
+rb <- lyricstrain %>%
+  filter(genre=="R&B")
+rb <- rb[1:5000,]
+jazz <- lyricstrain %>%
+  filter(genre=="Jazz")
+jazz <- jazz[1:5000,]
+lyricstrain <- rbind(rock2, pop, hiphop, rb, jazz)
+
+#Putting examples in random order
 lyricstrain <- lyricstrain[sample(nrow(lyricstrain)),]
 
-#splitting lyricstrain into two dataframes
+#splitting lyricstrain into two dataframes so it is under github's file size limit
 half = dim(lyricstrain)[1]/2
 full = dim(lyricstrain)[1]
 lyricstrain1 <- lyricstrain[1:half,]
