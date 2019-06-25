@@ -19,7 +19,6 @@ library(purrr)
 lyrics1 <- read.csv("allgenresupdatefinal1.csv")
 lyrics2 <- read.csv("allgenresupdatefinal2.csv")
 lyricstrain <- rbind(lyrics1,lyrics2)
-#lyricstrain <- read.csv("allgenresupdatefinal5.csv")
 
 #forming a corpus
 lyricstrain$lyrics <- as.character(lyricstrain$lyrics)
@@ -76,12 +75,10 @@ recall <- function(ypred, y){
   tab <- table(ypred, y)
   return(tab[2,2]/(tab[1,2]+tab[2,2]))
 }
-a <- table(preds, lyricstrain$genre[cutoff:end])
-rowSums(a)
-colSums(a)
-a
 
-accuracy(preds, lyricstrain$genre[cutoff:end])
-precision(preds, lyricstrain$genre[cutoff:end])
-recall(preds, lyricstrain$genre[cutoff:end])
+#Outputting Confusion Matrix, Accuracy, Precision and Recall Scores
+confusionmatrix <- table(preds, lyricstrain$genre[cutoff:end])
+paste0("Accuracy is ", accuracy(preds, lyricstrain$genre[cutoff:end]))
+paste0("Precision is ", precision(preds, lyricstrain$genre[cutoff:end]))
+paste0("Recall is ", recall(preds, lyricstrain$genre[cutoff:end]))
 
