@@ -30,7 +30,6 @@ dfm.matrixtrainsample <- dfm.matrixtrain[1:5,]
 save(dfm.matrixtrainsample, file='dfm.matrix.rda')
 
 #putting examples in a random order
-#putting examples in a random order
 set.seed(nrow(dfm.matrixtrain))
 rand <- sample(nrow(dfm.matrixtrain))
 dfm.matrixtrain <- dfm.matrixtrain[rand,]
