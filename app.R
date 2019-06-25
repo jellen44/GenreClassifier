@@ -25,9 +25,8 @@ library(wordcloud)
 library(SparseM)
 
 #Load in the Trained Model 
-load('ml2.rda')
-load('dfm.matrix.rda')
-
+load('SVM_Model.rda')
+load('Sample_dfmatrix.rda')
 
 #Recreating confusion matrix (takes less memory than loading the file straight in)
 hiphop <- c(776, 32, 67, 35, 45)
@@ -48,73 +47,15 @@ CapStr <- function(y) {
 }
 
 
-
-# rapcorpusa <- corpus_subset(traincorpus, genre=="Hip-Hop")
-# rapcorpus <- dfm(rapcorpusa,
-#                  ngrams = 1,
-#                  remove = stopwords("english"),
-#                  stem = TRUE,
-#                  remove_punct = TRUE)
-# dfm.matrixrap <- convert(rapcorpus, to = "matrix")
-# vrap <- sort(colSums(dfm.matrixrap), decreasing=TRUE)
-# drap <- data.frame(word = names(vrap),freq=vrap)
-# 
-# 
-# popcorpusa <- corpus_subset(traincorpus, genre=="Pop")
-# popcorpus <- dfm(popcorpusa,
-#                  ngrams = 1,
-#                  remove = c(stopwords("english"), "i", "ï", "î", "í", "ī", "į", "ì"),
-#                  stem = TRUE,
-#                  remove_punct = TRUE)
-# dfm.matrixpop <- convert(popcorpus, to = "matrix")
-# vpop <- sort(colSums(dfm.matrixpop), decreasing=TRUE)
-# dpop <- data.frame(word = names(vpop),freq=vpop)
-# 
-# rockcorpusa <- corpus_subset(traincorpus, genre=="Rock")
-# rockcorpus <- dfm(rockcorpusa,
-#                   ngrams = 1,
-#                   remove = stopwords("english"),
-#                   stem = TRUE,
-#                   remove_punct = TRUE)
-# dfm.matrixrock <- convert(rockcorpus, to = "matrix")
-# vrock <- sort(colSums(dfm.matrixrock), decreasing=TRUE)
-# drock <- data.frame(word = names(vrock),freq=vrock)
-# 
-# 
-# jazzcorpusa <- corpus_subset(traincorpus, genre=="R&B")
-# jazzcorpus <- dfm(jazzcorpusa,
-#                   ngrams = 1,
-#                   remove = stopwords("english"),
-#                   stem = TRUE,
-#                   remove_punct = TRUE)
-# dfm.matrixjazz <- convert(jazzcorpus, to = "matrix")
-# vjazz <- sort(colSums(dfm.matrixjazz), decreasing=TRUE)
-# djazz <- data.frame(word = names(vjazz),freq=vjazz)
-# 
-# rbcorpusa <- corpus_subset(traincorpus, genre=="R&B")
-# rbcorpus <- dfm(rbcorpusa,
-#                 ngrams = 1,
-#                 remove = stopwords("english"),
-#                 stem = TRUE,
-#                 remove_punct = TRUE)
-# dfm.matrixrb <- convert(rbcorpus, to = "matrix")
-# vrb <- sort(colSums(dfm.matrixrb), decreasing=TRUE)
-# drb <- data.frame(word = names(vrb),freq=vrb)
-# 
-# 
-# 
-
-
-
 ui <- dashboardPage(
 dashboardHeader(title="Genre Classification App"),
 dashboardSidebar(
+  #hides red error text
   tags$style(type="text/css",
              ".shiny-output-error { visibility: hidden; }",
              ".shiny-output-error:before { visibility: hidden; }"),
   sidebarMenu(id = "tabs",
     menuItem("Genre Prediction", tabName = "GenrePrediction"),
-    #menuItem("Word Clouds", tabName = "wc"),
     menuItem("Model Performance", tabName="mp"))),
 dashboardBody(
   tabItems(
@@ -130,12 +71,6 @@ dashboardBody(
                                        max=30, min=1, value=15)),
               mainPanel(plotOutput(outputId = "songdata"))
               )),
-#    tabItem(tabName="wc", fluidRow(sliderInput(inputId = "maxword", label="Slide to Adjust the Number of Words in Each Wordcloud",
-#                                     max=125, min=1, value=75), align="center"),
-#              box(plotOutput(outputId = "rockwordcloud")),  box(plotOutput(outputId = "popwordcloud")), box(plotOutput(outputId = "hipwordcloud")),
-#            box(plotOutput(outputId = "rbwordcloud")), box(plotOutput(outputId = "jazzwordcloud"))
-                 
-#             ),
     tabItem(tabName="mp",
              h2(textOutput(outputId = "text1"), align="center"), textOutput(outputId="text2"), fluidRow(tableOutput(outputId = "table1"), align="center")
              )
@@ -156,6 +91,8 @@ server <- function(input, output, session) {
       html_nodes('p') %>%
       .[[1]] %>%
       html_text()
+    
+    #Replacing Extra Words not actually in the songs
     words  <- str_remove_all(words[1], c("\r"))
     words <- str_replace_all(words, c("\n","\r"), " ")[1]
     words  <- str_remove_all(words, "Verse")
@@ -168,6 +105,8 @@ server <- function(input, output, session) {
     words  <- str_remove_all(words, "2")
     words  <- str_remove_all(words, "3")
     words  <- str_remove_all(words, "produced")
+    
+    #forming a document feature matrix
     words <- as.data.frame(words)
     colnames(words) <- c("lyrics")
     words$lyrics <- as.character(words$lyrics)
@@ -176,15 +115,20 @@ server <- function(input, output, session) {
                          ngrams = 1,
                          remove = stopwords("english"),
                          remove_punct = TRUE)
+    
+    #binding DFM to training DFM, so testing format is the same as training
     finalcorpus <- rbind(dfm.matrixtrainsample, lyricscorpus2)
     rownum <- dim(finalcorpus)[1]
     colnum <- dim(dfm.matrixtrainsample)[2]
+    
+    #Prediction
     prediction <- predict(ml1, newdata = finalcorpus[rownum,1:colnum])
     prediction <- as.character(prediction)
     paste0("Prediction: ", CapStr(input$song), " by ", CapStr(input$artist), " is a ", prediction, " song")
     
   })
   output$songdata <- renderPlot({
+    #Same Code as above to form a list of the most common words
     song <- tolower(str_replace_all(input$song," ", "-"))
     artist <- tolower(str_replace_all(input$artist," ", "-"))
     lyrics.url <- paste0("https://www.genius.com/", CapStr(artist), "-",
@@ -206,10 +150,13 @@ server <- function(input, output, session) {
     words  <- str_remove_all(words, "2")
     words  <- str_remove_all(words, "3")
     words  <- str_remove_all(words, "produced")
+    #making sure artist's name isn't included in the lyrics
     a <- str_split(artist, "-")
     a <- unlist(a)
     words  <- str_remove_all(words, CapStr(a[1]))
     words  <- str_remove_all(words, CapStr(a[2]))
+    
+    #Forming a DFM
     words <- as.data.frame(words)
     colnames(words) <- c("lyrics")
     words$lyrics <- as.character(words$lyrics)
@@ -218,12 +165,15 @@ server <- function(input, output, session) {
                          ngrams = 1,
                          remove = stopwords("english"),
                          remove_punct = TRUE)
+    
+    #Finding most common words
     topf <- topfeatures(lyricscorpus2, input$slider)
     topf <- as.data.frame(topf)
     topf2 <- as.data.frame(cbind(rownames(topf), topf$topf))
     colnames(topf2) <- c("PopularWords","Frequency")
     topf2$Frequency <- as.numeric(topf2$Frequency)
-    topf2
+
+    #plotting most common words
     topf2 %>%
       ggplot(aes(x=reorder(PopularWords, -Frequency), y=Frequency)) + geom_col(fill="blue", color = "black") + labs(x=NULL, y="Frequency", title = paste0("Most Common Words in ", CapStr(input$song), " (", CapStr(input$artist), ")")) + 
       theme_classic() + theme(axis.text.x = element_text(angle = 30, vjust = .5, size=15), axis.text.y = element_text(size=16), plot.title = element_text(size=18), axis.title=element_text(size=16))  
@@ -232,11 +182,11 @@ server <- function(input, output, session) {
     paste("This machine learning model uses the lyrics of a song to predict one of five genres: hip-hop, pop, rock, jazz and R&B.")
   })
   output$albumpic <- renderUI({
+   #Scraping album cover of whatever song is chosen
   song <- tolower(str_replace_all(input$song," ", "-"))
   artist <- tolower(str_replace_all(input$artist," ", "-"))
   pic.url <- paste0("https://www.genius.com/", CapStr(artist), "-",
                                 song, sep = "-","lyrics")
-  #replace lyrics with spaces
   image <- read_html(pic.url) %>%
       html_nodes("img") %>%
       .[[1]] %>%
@@ -244,55 +194,12 @@ server <- function(input, output, session) {
   tags$img(src = image)
   
   })
-  output$popwordcloud <- renderPlot({
-    layout(matrix(c(1, 2), nrow=2), heights=c(1, 13))
-    par(mar=rep(0, 4))
-    plot.new()
-    text(x=0.5, y=0.5, "Pop Plot")
-    wordcloud(words = dpop$word, freq = dpop$freq, min.freq = 1,
-              max.words=input$maxword, random.order=FALSE, rot.per=0.35, 
-              colors=brewer.pal(8, "Dark2"), main="Pop Plot")
-  })
-  output$hipwordcloud <- renderPlot({
-    layout(matrix(c(1, 2), nrow=2), heights=c(1, 13))
-    par(mar=rep(0, 4))
-    plot.new()
-    text(x=0.5, y=0.5, "Hip-Hop Plot")
-    wordcloud(words = drap$word, freq = drap$freq, min.freq = 1,
-              max.words=input$maxword, random.order=FALSE, rot.per=0.35, 
-              colors=brewer.pal(8, "Dark2"), main="Hip-Hop Plot")
-  })
-  output$rockwordcloud <- renderPlot({
-    layout(matrix(c(1, 2), nrow=2), heights=c(1, 13))
-    par(mar=rep(0, 4))
-    plot.new()
-    text(x=0.5, y=0.5, "Rock Plot")
-    wordcloud(words = drock$word, freq = drock$freq, min.freq = 1,
-              max.words=input$maxword, random.order=FALSE, rot.per=0.35, 
-              colors=brewer.pal(8, "Dark2"), main="Rock Plot")
-  })
-  output$rbwordcloud <- renderPlot({
-    layout(matrix(c(1, 2), nrow=2), heights=c(1, 13))
-    par(mar=rep(0, 4))
-    plot.new()
-    text(x=0.5, y=0.5, "R&B Plot")
-    wordcloud(words = drb$word, freq = drb$freq, min.freq = 1,
-              max.words=input$maxword, random.order=FALSE, rot.per=0.35, 
-              colors=brewer.pal(8, "Dark2"), main="R&B Plot")
-  })
-  output$jazzwordcloud <-renderPlot({
-    layout(matrix(c(1, 2), nrow=2), heights=c(1, 13))
-    par(mar=rep(0, 4))
-    plot.new()
-    text(x=0.5, y=0.5, "Jazz Plot")
-    wordcloud(words = djazz$word, freq = djazz$freq, min.freq = 1,
-              max.words=input$maxword, random.order=FALSE, rot.per=0.35, 
-              colors=brewer.pal(8, "Dark2"), main="Jazz Plot")
-  })
   output$text1 <- renderText({
+    #Header
     paste("Project and Model Information")
   })
   output$text2 <- renderText({
+    #Explanation Text
   paste("This project attempts to answer one specific question: is there a connection between the lyrics of a song and its genre? 
         In other words, are there words that are more indicative of a specific genre than others? 
         I used a dataset from Kaggle (https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics) containing over 380,000 songs from MetroLyrics, with each song’s title, genre, year and lyrical content. 
