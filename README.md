@@ -1,5 +1,4 @@
 # Genre Classification Algorithm
-Interactive shiny app using the algorithm can be found at: https://jellen.shinyapps.io/LyricsAppJE/
 
 Dataset: https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics
 
